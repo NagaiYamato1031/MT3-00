@@ -1,5 +1,5 @@
 #include <Novice.h>
-#include <Vec3.h>
+#include <Vector3.h>
 
 const char kWindowTitle[] = "LE2A_12_ナガイ_ヤマト_MT3_00_01_確認課題";
 const int kWindowWidth = 1280;
