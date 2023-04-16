@@ -31,9 +31,15 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 }
 
 Matrix4x4 Inverse(const Matrix4x4& m1) {
-
+	return m1;
 }
 
 Matrix4x4 Transpose(const Matrix4x4& m1) {
-
+	Matrix4x4 temp;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			temp.m[i][j] = m1.m[j][i];
+		}
+	}
+	return temp;
 }
