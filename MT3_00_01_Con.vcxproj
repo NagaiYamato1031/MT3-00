@@ -107,12 +107,13 @@
     <ClCompile Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Vec3.cpp" />
+    <ClCompile Include="Vector3.cpp" />
+    <ClCompile Include="Matrix4x4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector2.h" />
-    <ClInclude Include="..\..\..\..\..\..\KamataEngine\DirectXGame\math\Vec3.h" />
+    <ClInclude Include="..\..\..\..\..\..\KamataEngine\DirectXGame\math\Vector3.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector4.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\3d\CircleShadow.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\3d\DebugCamera.h" />
