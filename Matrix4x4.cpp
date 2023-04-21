@@ -1,19 +1,18 @@
 #include "Matrix4x4.h"
 
-#include "Novice.h"
 #include "Vector3.h"
 
 #include <cmath>
 
-void Matrix4x4ScreenPrintf(int x, int y, const Matrix4x4& matrix) {
-	for (int row = 0; row < 4; row++) {
-		for (int column = 0; column < 4; column++) {
-			Novice::ScreenPrintf(
-				x + column * Matrix4x4::kColumnWidth, y + row * Matrix4x4::kRowHeight, "%6.02f",
-				matrix.m[row][column]);
-		}
-	}
-}
+//void Matrix4x4ScreenPrintf(int x, int y, const Matrix4x4& matrix) {
+//	for (int row = 0; row < 4; row++) {
+//		for (int column = 0; column < 4; column++) {
+//			Novice::ScreenPrintf(
+//				x + column * Matrix4x4::kColumnWidth, y + row * Matrix4x4::kRowHeight, "%6.02f",
+//				matrix.m[row][column]);
+//		}
+//	}
+//}
 
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 temp = m1;
