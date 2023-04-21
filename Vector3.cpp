@@ -7,9 +7,9 @@
 // 描画
 void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label) {
 	Novice::ScreenPrintf(x, y, "%0.2f", vector.x);
-	Novice::ScreenPrintf(x + kColumnWidth, y, "%0.2f", vector.y);
-	Novice::ScreenPrintf(x + kColumnWidth * 2, y, "%0.2f", vector.z);
-	Novice::ScreenPrintf(x + kColumnWidth * 3, y, "%s", label);
+	Novice::ScreenPrintf(x + Vector3::kColumnWidth, y, "%0.2f", vector.y);
+	Novice::ScreenPrintf(x + Vector3::kColumnWidth * 2, y, "%0.2f", vector.z);
+	Novice::ScreenPrintf(x + Vector3::kColumnWidth * 3, y, "%s", label);
 }
 
 // 加算
