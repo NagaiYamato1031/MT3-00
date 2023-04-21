@@ -1,5 +1,17 @@
 #include "Matrix4x4.h"
 
+#include "Novice.h"
+
+void Matrix4x4ScreenPrintf(int x, int y, const Matrix4x4& matrix) {
+	for (int row = 0; row < 4; row++) {
+		for (int column = 0; column < 4; column++) {
+			Novice::ScreenPrintf(
+				x + column * Matrix4x4::kColumnWidth, y + row * Matrix4x4::kRowHeight, "%6.02f",
+				matrix.m[row][column]);
+		}
+	}
+}
+
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 temp = m1;
 	for (int i = 0; i < 4; i++) {
@@ -38,10 +50,10 @@ Matrix4x4 Inverse(const Matrix4x4& m1) {
 
 		- m1.m[0][0] * m1.m[1][3] * m1.m[2][2] * m1.m[3][1]
 		- m1.m[0][0] * m1.m[1][2] * m1.m[2][1] * m1.m[3][3]
-		- m1.m[0][0] * m1.m[1][1] * m1.m[2][1] * m1.m[3][2]
+		- m1.m[0][0] * m1.m[1][1] * m1.m[2][3] * m1.m[3][2]
 
 		- m1.m[0][1] * m1.m[1][0] * m1.m[2][2] * m1.m[3][3]
-		- m1.m[0][2] * m1.m[1][0] * m1.m[2][1] * m1.m[3][1]
+		- m1.m[0][2] * m1.m[1][0] * m1.m[2][3] * m1.m[3][1]
 		- m1.m[0][3] * m1.m[1][0] * m1.m[2][1] * m1.m[3][2]
 
 		+ m1.m[0][3] * m1.m[1][0] * m1.m[2][2] * m1.m[3][1]
@@ -57,8 +69,8 @@ Matrix4x4 Inverse(const Matrix4x4& m1) {
 		- m1.m[0][1] * m1.m[1][3] * m1.m[2][0] * m1.m[3][2]
 
 		- m1.m[0][1] * m1.m[1][2] * m1.m[2][3] * m1.m[3][0]
-		- m1.m[0][2] * m1.m[1][3] * m1.m[2][2] * m1.m[3][0]
-		- m1.m[0][3] * m1.m[1][1] * m1.m[2][1] * m1.m[3][0]
+		- m1.m[0][2] * m1.m[1][3] * m1.m[2][1] * m1.m[3][0]
+		- m1.m[0][3] * m1.m[1][1] * m1.m[2][2] * m1.m[3][0]
 
 		+ m1.m[0][3] * m1.m[1][2] * m1.m[2][1] * m1.m[3][0]
 		+ m1.m[0][2] * m1.m[1][1] * m1.m[2][3] * m1.m[3][0]
