@@ -375,14 +375,19 @@ Matrix4x4 Mymath::MakeRotateZMatrix(float radian) {
 	return rotZ_;
 }
 
+Matrix4x4 Mymath::MakeRotateXYZMatrix(const Vector3& radian) {
+	Matrix4x4 rotX_ = MakeRotateXMatrix(radian.x);
+	Matrix4x4 rotY_ = MakeRotateYMatrix(radian.y);
+	Matrix4x4 rotZ_ = MakeRotateZMatrix(radian.z);
+	return Multiply(Multiply(rotX_, rotY_), rotZ_);
+}
+
 Matrix4x4 Mymath::MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate) {
 
 	Matrix4x4 scaleMatrix_ = MakeScaleMatrix(scale);
 
-	Matrix4x4 rotZ_ = MakeRotateZMatrix(rot.z);
-	Matrix4x4 rotY_ = MakeRotateYMatrix(rot.y);
-	Matrix4x4 rotX_ = MakeRotateXMatrix(rot.x);
-	Matrix4x4 rotateMatrix_ = Multiply(Multiply(rotX_, rotY_), rotZ_);
+	
+	Matrix4x4 rotateMatrix_ = MakeRotateXYZMatrix(rot);
 
 	Matrix4x4 translateMatrix_ = MakeTranslateMatrix(translate);
 

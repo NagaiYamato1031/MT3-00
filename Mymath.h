@@ -236,6 +236,13 @@ namespace Mymath
 	Matrix4x4 MakeRotateZMatrix(float radian);
 
 	/// <summary>
+	/// 回転行列
+	/// </summary>
+	/// <param name="radian">XYZ の回転角</param>
+	/// <returns>回転行列</returns>
+	Matrix4x4 MakeRotateXYZMatrix(const Vector3& radian);
+
+	/// <summary>
 	/// 4x4 アフィン行列
 	/// </summary>
 	/// <param name="scale">スケール</param>
