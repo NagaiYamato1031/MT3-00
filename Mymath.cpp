@@ -345,28 +345,43 @@ Matrix4x4 Mymath::MakeScaleMatrix(const Vector3& scale) {
 	return scaleMatrix_;
 }
 
+Matrix4x4 Mymath::MakeRotateXMatrix(float radian) {
+	Matrix4x4 rotX_ = {
+		1,0,0,0,
+		0,std::cosf(radian),std::sinf(radian),0,
+		0,-std::sinf(radian),std::cosf(radian),0,
+		0,0,0,1
+	};
+	return rotX_;
+}
+
+Matrix4x4 Mymath::MakeRotateYMatrix(float radian) {
+	Matrix4x4 rotY_ = {
+		std::cosf(radian),0,-std::sinf(radian),0,
+		0,1,0,0,
+		std::sinf(radian),0,std::cosf(radian),0,
+		0,0,0,1
+	};
+	return rotY_;
+}
+
+Matrix4x4 Mymath::MakeRotateZMatrix(float radian) {
+	Matrix4x4 rotZ_ = {
+		std::cosf(radian),std::sinf(radian),0,0,
+		-std::sinf(radian),std::cosf(radian),0,0,
+		0,0,1,0,
+		0,0,0,1
+	};
+	return rotZ_;
+}
+
 Matrix4x4 Mymath::MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate) {
 
 	Matrix4x4 scaleMatrix_ = MakeScaleMatrix(scale);
 
-	Matrix4x4 rotZ_ = {
-		std::cosf(rot.z),std::sinf(rot.z),0,0,
-		-std::sinf(rot.z),std::cosf(rot.z),0,0,
-		0,0,1,0,
-		0,0,0,1
-	};
-	Matrix4x4 rotX_ = {
-		1,0,0,0,
-		0,std::cosf(rot.x),std::sinf(rot.x),0,
-		0,-std::sinf(rot.x),std::cosf(rot.x),0,
-		0,0,0,1
-	};
-	Matrix4x4 rotY_ = {
-		std::cosf(rot.y),0,-std::sinf(rot.y),0,
-		0,1,0,0,
-		std::sinf(rot.y),0,std::cosf(rot.y),0,
-		0,0,0,1
-	};
+	Matrix4x4 rotZ_ = MakeRotateZMatrix(rot.z);
+	Matrix4x4 rotY_ = MakeRotateYMatrix(rot.y);
+	Matrix4x4 rotX_ = MakeRotateXMatrix(rot.x);
 	Matrix4x4 rotateMatrix_ = Multiply(Multiply(rotX_, rotY_), rotZ_);
 
 	Matrix4x4 translateMatrix_ = MakeTranslateMatrix(translate);

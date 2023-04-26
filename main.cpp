@@ -48,18 +48,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Vector3 translate{ 4.1f,2.6f,0.8f };
-	Vector3 scale{ 1.5f,5.2f,7.3f };
-	Matrix4x4 translateMatrix = Mymath::MakeTranslateMatrix(translate);
-	Matrix4x4 scaleMatrix = Mymath::MakeScaleMatrix(scale);
-	Vector3 point{ 2.3f,3.8f,1.4f };
-	Matrix4x4 transformMatrix = {
-		1.0f,2.0f,3.0f,4.0f,
-		3.0f,1.0f,1.0f,2.0f,
-		1.0f,4.0f,2.0f,3.0f,
-		2.0f,2.0f,1.0f,3.0f
-	};
-	Vector3 transformed = Mymath::Transform(point, transformMatrix);
+	Vector3 rotate{ 0.4f,1.43f,-0.8f };
+	Matrix4x4 rotateXMatrix = Mymath::MakeRotateXMatrix(rotate.x);
+	Matrix4x4 rotateYMatrix = Mymath::MakeRotateYMatrix(rotate.y);
+	Matrix4x4 rotateZMatrix = Mymath::MakeRotateZMatrix(rotate.z);
+	Matrix4x4 rotateXYZMatrix = Mymath::Multiply(Mymath::Multiply(rotateXMatrix, rotateYMatrix), rotateZMatrix);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -84,9 +77,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		VectorScreenPrintf(0, 0, transformed, "transformed");
-		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight, translateMatrix, "translateMatrix");
-		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 6, scaleMatrix, "scaleMatrix");
+		Matrix4x4ScreenPrintf(0, 0, rotateXMatrix, "rotateXMatrix");
+		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5, rotateYMatrix, "rotateYMatrix");
+		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5 * 2, rotateZMatrix, "rotateZMatrix");
+		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5 * 3, rotateXYZMatrix, "rotateXYZMatrix");
+
+
 
 		///
 		/// ↑描画処理ここまで
