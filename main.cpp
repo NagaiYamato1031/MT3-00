@@ -10,16 +10,29 @@ const char kWindowTitle[] = "LE2A_12_ナガイ_ヤマト_MT3_00_確認課題";
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
 
+namespace NS_Vector3 {
+	const int kRowHeight = 20;
+	const int kColumnWidth = 60;
+}
+
 namespace NS_Matrix4x4 {
 	const int kRowHeight = 20;
 	const int kColumnWidth = 68;
 }
 
-void Matrix4x4ScreenPrintf(int x, int y, Matrix4x4 matrix) {
+void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label) {
+	Novice::ScreenPrintf(x, y, "%0.2f", vector.x);
+	Novice::ScreenPrintf(x + NS_Vector3::kColumnWidth, y, "%0.2f", vector.y);
+	Novice::ScreenPrintf(x + NS_Vector3::kColumnWidth * 2, y, "%0.2f", vector.z);
+	Novice::ScreenPrintf(x + NS_Vector3::kColumnWidth * 3, y, "%s", label);
+}
+
+void Matrix4x4ScreenPrintf(int x, int y, Matrix4x4 matrix, const char* label) {
+	Novice::ScreenPrintf(x, y, "%s", label);
 	for (int row = 0; row < 4; row++) {
 		for (int column = 0; column < 4; column++) {
 			Novice::ScreenPrintf(
-				x + column * NS_Matrix4x4::kColumnWidth, y + row * NS_Matrix4x4::kRowHeight, "%6.02f",
+				x + column * NS_Matrix4x4::kColumnWidth, y + (row + 1) * NS_Matrix4x4::kRowHeight, "%6.02f",
 				matrix.m[row][column]);
 		}
 	}
@@ -35,28 +48,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Matrix4x4 m1 = {
-		3.2f, 0.7f, 9.6f, 4.4f,
-		5.5f, 1.3f, 7.8f, 2.1f,
-		6.9f, 8.0f, 2.6f, 1.0f,
-		0.5f, 7.2f, 5.1f, 3.3f
+	Vector3 translate{ 4.1f,2.6f,0.8f };
+	Vector3 scale{ 1.5f,5.2f,7.3f };
+	Matrix4x4 translateMatrix = Mymath::MakeTranslateMatrix(translate);
+	Matrix4x4 scaleMatrix = Mymath::MakeScaleMatrix(scale);
+	Vector3 point{ 2.3f,3.8f,1.4f };
+	Matrix4x4 transformMatrix = {
+		1.0f,2.0f,3.0f,4.0f,
+		3.0f,1.0f,1.0f,2.0f,
+		1.0f,4.0f,2.0f,3.0f,
+		2.0f,2.0f,1.0f,3.0f
 	};
-	Matrix4x4 m2 = {
-		4.1f, 6.5f, 3.3f, 2.2f,
-		8.8f, 0.6f, 9.9f, 7.7f,
-		1.1f, 5.5f, 6.6f, 0.0f,
-		3.3f, 9.9f, 8.8f, 2.2f
-	};
-
-	Matrix4x4 resultAdd = Mymath::Add(m1, m2);
-	Matrix4x4 resultMultiply = Mymath::Multiply(m1, m2);
-	Matrix4x4 resultSubtract = Mymath::Subtract(m1, m2);
-	Matrix4x4 inverseM1 = Mymath::Inverse(m1);
-	Matrix4x4 inverseM2 = Mymath::Inverse(m2);
-	Matrix4x4 transposeM1 = Mymath::Transpose(m1);
-	Matrix4x4 transposeM2 = Mymath::Transpose(m2);
-	Matrix4x4 identity = Mymath::MakeIdentity4x4();
-
+	Vector3 transformed = Mymath::Transform(point, transformMatrix);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -81,14 +84,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		Matrix4x4ScreenPrintf(0, 0, resultAdd);
-		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5, resultSubtract);
-		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5 * 2, resultMultiply);
-		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5 * 3, inverseM1);
-		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5 * 4, inverseM2);
-		Matrix4x4ScreenPrintf(NS_Matrix4x4::kColumnWidth * 5, 0, transposeM1);
-		Matrix4x4ScreenPrintf(NS_Matrix4x4::kColumnWidth * 5, NS_Matrix4x4::kRowHeight * 5, transposeM2);
-		Matrix4x4ScreenPrintf(NS_Matrix4x4::kColumnWidth * 5, NS_Matrix4x4::kRowHeight * 5 * 2, identity);
+		VectorScreenPrintf(0, 0, transformed, "transformed");
+		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight, translateMatrix, "translateMatrix");
+		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 6, scaleMatrix, "scaleMatrix");
 
 		///
 		/// ↑描画処理ここまで

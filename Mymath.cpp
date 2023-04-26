@@ -7,6 +7,7 @@
 #include "Matrix4x4.h"
 
 #include <cmath>
+#include <cassert>
 
 //using namespace Mymath;
 
@@ -57,12 +58,32 @@ Vector3 Mymath::Normalize(const Vector3& v) {
 	}
 	return temp;
 }
+
+Vector3 Mymath::Transform(const Vector3& vector, const Matrix4x4& matrix) {
+	Vector4 temp = Multiply(Vector4{ vector.x,vector.y,vector.z,1.0f }, matrix);
+	assert(temp.w != 0.0f);
+	temp.x /= temp.w;
+	temp.y /= temp.w;
+	temp.z /= temp.w;
+	return Vector3{ temp.x,temp.y,temp.z };
+}
+
 // End Vector3
 #pragma endregion
 
 #pragma region Vector4
 
 
+Vector4 Mymath::Multiply(const Vector4& v, const Matrix4x4& matrix) {
+	float temp[4]{ 0,0,0,0 };
+	float vf[4]{ v.x,v.y,v.z,v.w };
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			temp[i] += vf[j] * matrix.m[j][i];
+		}
+	}
+	return Vector4{ temp[0],temp[1],temp[2],temp[3] };
+}
 
 // End Vector4
 #pragma endregion
@@ -304,14 +325,29 @@ Matrix4x4 Mymath::MakeIdentity4x4() {
 	return Matrix4x4{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 }
 
-Matrix4x4 Mymath::MakeAffineMatrix4x4(const Vector3& scale, const Vector3& rot, const Vector3& translate) {
+Matrix4x4 Mymath::MakeTranslateMatrix(const Vector3& translate) {
+	Matrix4x4 translateMatrix_ = {
+		1,0,0,0,
+		0,1,0,0,
+		0,0,1,0,
+		translate.x,translate.y,translate.z,1
+	};
+	return translateMatrix_;
+}
 
+Matrix4x4 Mymath::MakeScaleMatrix(const Vector3& scale) {
 	Matrix4x4 scaleMatrix_ = {
 		scale.x,0,0,0,
 		0,scale.y,0,0,
 		0,0,scale.z,0,
 		0,0,0,1
 	};
+	return scaleMatrix_;
+}
+
+Matrix4x4 Mymath::MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate) {
+
+	Matrix4x4 scaleMatrix_ = MakeScaleMatrix(scale);
 
 	Matrix4x4 rotZ_ = {
 		std::cosf(rot.z),std::sinf(rot.z),0,0,
@@ -333,12 +369,7 @@ Matrix4x4 Mymath::MakeAffineMatrix4x4(const Vector3& scale, const Vector3& rot, 
 	};
 	Matrix4x4 rotateMatrix_ = Multiply(Multiply(rotX_, rotY_), rotZ_);
 
-	Matrix4x4 translateMatrix_ = {
-		1,0,0,0,
-		0,1,0,0,
-		0,0,1,0,
-		translate.x,translate.y,translate.z,1
-	};
+	Matrix4x4 translateMatrix_ = MakeTranslateMatrix(translate);
 
 	return Multiply(Multiply(scaleMatrix_, rotateMatrix_), translateMatrix_);
 }
