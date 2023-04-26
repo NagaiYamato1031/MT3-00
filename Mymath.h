@@ -215,6 +215,27 @@ namespace Mymath
 	Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 
 	/// <summary>
+	/// X 軸回転行列
+	/// </summary>
+	/// <param name="radian">X の回転角</param>
+	/// <returns>X 軸回転行列</returns>
+	Matrix4x4 MakeRotateXMatrix(float radian);
+	
+	/// <summary>
+	/// Y 軸回転行列
+	/// </summary>
+	/// <param name="radian">Y の回転角</param>
+	/// <returns>Y 軸回転行列</returns>
+	Matrix4x4 MakeRotateYMatrix(float radian);
+	
+	/// <summary>
+	/// Z 軸回転行列
+	/// </summary>
+	/// <param name="radian">Z の回転角</param>
+	/// <returns>Z 軸回転行列</returns>
+	Matrix4x4 MakeRotateZMatrix(float radian);
+
+	/// <summary>
 	/// 4x4 アフィン行列
 	/// </summary>
 	/// <param name="scale">スケール</param>
