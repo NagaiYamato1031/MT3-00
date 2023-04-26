@@ -70,6 +70,14 @@ namespace Mymath
 	/// <returns>正規化されたベクトル</returns>
 	Vector3 Normalize(const Vector3& v);
 
+	/// <summary>
+	/// 座標変換
+	/// </summary>
+	/// <param name="vector">座標</param>
+	/// <param name="matrix">行列</param>
+	/// <returns>変換座標</returns>
+	Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
+
 	// End Vector3
 #pragma endregion
 
@@ -98,6 +106,14 @@ namespace Mymath
 	/// <param name="v">ベクトル</param>
 	/// <returns>乗算されたベクトル</returns>
 	Vector4 Multiply(float scalar, const Vector4& v);
+	
+	/// <summary>
+	/// ベクトルの乗算
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <param name="matrix">行列</param>
+	/// <returns>乗算されたベクトル</returns>
+	Vector4 Multiply(const Vector4& v,const Matrix4x4& matrix);
 
 	/// <summary>
 	/// ベクトルの内積
@@ -185,13 +201,27 @@ namespace Mymath
 	Matrix4x4 MakeIdentity4x4();
 
 	/// <summary>
+	/// 4x4 平行移動行列
+	/// </summary>
+	/// <param name="translate">移動ベクトル</param>
+	/// <returns>4x4 平行移動行列</returns>
+	Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
+
+	/// <summary>
+	/// 4x4 拡縮行列
+	/// </summary>
+	/// <param name="scale">拡縮</param>
+	/// <returns>4x4 拡縮行列</returns>
+	Matrix4x4 MakeScaleMatrix(const Vector3& scale);
+
+	/// <summary>
 	/// 4x4 アフィン行列
 	/// </summary>
 	/// <param name="scale">スケール</param>
 	/// <param name="rotate">回転</param>
 	/// <param name="translate">移動</param>
 	/// <returns>4x4 アフィン行列</returns>
-	Matrix4x4 MakeAffineMatrix4x4(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+	Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 
 	// End Matrix4x4
 #pragma endregion
