@@ -18,6 +18,60 @@ namespace Mymath
 #pragma region Vector2
 
 
+	/// <summary>
+	/// ベクトルの加算
+	/// </summary>
+	/// <param name="v1">ベクトル１</param>
+	/// <param name="v2">ベクトル２</param>
+	/// <returns>加算されたベクトル</returns>
+	Vector2 Add(const Vector2& v1, const Vector2& v2);
+
+	/// <summary>
+	/// ベクトルの減算
+	/// </summary>
+	/// <param name="v1">ベクトル１</param>
+	/// <param name="v2">ベクトル２</param>
+	/// <returns>減算されたベクトル</returns>
+	Vector2 Subtract(const Vector2& v1, const Vector2& v2);
+
+	/// <summary>
+	/// ベクトルの乗算
+	/// </summary>
+	/// <param name="scalar">スカラー</param>
+	/// <param name="v">ベクトル</param>
+	/// <returns>乗算されたベクトル</returns>
+	Vector2 Multiply(float scalar, const Vector2& v);
+
+	/// <summary>
+	/// ベクトルの内積
+	/// </summary>
+	/// <param name="v1">ベクトル１</param>
+	/// <param name="v2">ベクトル２</param>
+	/// <returns>内積</returns>
+	float Dot(const Vector2& v1, const Vector2& v2);
+
+	/// <summary>
+	/// ベクトルの長さ
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <returns>ベクトルの長さ</returns>
+	float Length(const Vector2& v);
+
+	/// <summary>
+	/// ベクトルの正規化
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <returns>正規化されたベクトル</returns>
+	Vector2 Normalize(const Vector2& v);
+
+	/// <summary>
+	/// 座標変換
+	/// </summary>
+	/// <param name="vector">座標</param>
+	/// <param name="matrix">行列</param>
+	/// <returns>変換座標</returns>
+	Vector2 Transform(const Vector2& vector, const Matrix3x3& matrix);
+
 
 	// End Vector2
 #pragma endregion
@@ -47,6 +101,14 @@ namespace Mymath
 	/// <param name="v">ベクトル</param>
 	/// <returns>乗算されたベクトル</returns>
 	Vector3 Multiply(float scalar, const Vector3& v);
+
+	/// <summary>
+	/// ベクトルと行列の乗算
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <param name="matrix">行列</param>
+	/// <returns>乗算されたベクトル</returns>
+	Vector3 Multiply(const Vector3& v, const Matrix3x3& matrix);
 
 	/// <summary>
 	/// ベクトルの内積

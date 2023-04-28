@@ -15,6 +15,51 @@
 
 #pragma region Vector2
 
+// 加算
+Vector2 Mymath::Add(const Vector2& v1, const Vector2& v2) {
+	return v1 + v2;
+}
+
+// 減算
+Vector2 Mymath::Subtract(const Vector2& v1, const Vector2& v2) {
+	return v1 - v2;
+}
+
+// スカラー倍
+Vector2 Mymath::Multiply(float scalar, const Vector2& v) {
+	return v * scalar;
+}
+
+// 内積
+float Mymath::Dot(const Vector2& v1, const Vector2& v2) {
+	return v1.x * v2.x + v1.y * v2.y;
+}
+
+// 長さ
+float Mymath::Length(const Vector2& v) {
+	return sqrtf(Dot(v, v));
+}
+
+// 正規化
+Vector2 Mymath::Normalize(const Vector2& v) {
+	float length = Length(v);
+	Vector2 temp = v;
+	if (length != 0) {
+		temp.x /= length;
+		temp.y /= length;
+	}
+	return temp;
+}
+
+Vector2 Mymath::Transform(const Vector2& vector, const Matrix3x3& matrix) {
+	Vector3 temp = Multiply(Vector3{ vector.x,vector.y,1.0f }, matrix);
+	assert(temp.z != 0.0f);
+	temp.x /= temp.z;
+	temp.y /= temp.z;
+	temp.z /= temp.z;
+	return Vector2{ temp.x,temp.y };
+}
+
 
 
 // End Vector2
@@ -24,19 +69,29 @@
 
 // 加算
 Vector3 Mymath::Add(const Vector3& v1, const Vector3& v2) {
-	return Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+	return v1 + v2;
 }
 
 // 減算
 Vector3 Mymath::Subtract(const Vector3& v1, const Vector3& v2) {
-	return Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+	return v1 - v2;
 }
 
 // スカラー倍
 Vector3 Mymath::Multiply(float scalar, const Vector3& v) {
-	return Vector3(scalar * v.x, scalar * v.y, scalar * v.z);
+	return v * scalar;
 }
 
+Vector3 Mymath::Multiply(const Vector3& v, const Matrix3x3& matrix) {
+	float temp[4]{ 0,0,0,0 };
+	float vf[4]{ v.x,v.y,v.z };
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			temp[i] += vf[j] * matrix.m[j][i];
+		}
+	}
+	return Vector3{ temp[0],temp[1],temp[2] };
+}
 // 内積
 float Mymath::Dot(const Vector3& v1, const Vector3& v2) {
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
@@ -74,6 +129,21 @@ Vector3 Mymath::Transform(const Vector3& vector, const Matrix4x4& matrix) {
 #pragma region Vector4
 
 
+// 加算
+Vector4 Mymath::Add(const Vector4& v1, const Vector4& v2) {
+	return v1 + v2;
+}
+
+// 減算
+Vector4 Mymath::Subtract(const Vector4& v1, const Vector4& v2) {
+	return v1 - v2;
+}
+
+// スカラー倍
+Vector4 Mymath::Multiply(float scalar, const Vector4& v) {
+	return v * scalar;
+}
+
 Vector4 Mymath::Multiply(const Vector4& v, const Matrix4x4& matrix) {
 	float temp[4]{ 0,0,0,0 };
 	float vf[4]{ v.x,v.y,v.z,v.w };
@@ -85,6 +155,28 @@ Vector4 Mymath::Multiply(const Vector4& v, const Matrix4x4& matrix) {
 	return Vector4{ temp[0],temp[1],temp[2],temp[3] };
 }
 
+// 内積
+float Mymath::Dot(const Vector4& v1, const Vector4& v2) {
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z + v1.w * v2.w;
+}
+
+// 長さ
+float Mymath::Length(const Vector4& v) {
+	return sqrtf(Dot(v, v));
+}
+
+// 正規化
+Vector4 Mymath::Normalize(const Vector4& v) {
+	float length = Length(v);
+	Vector4 temp = v;
+	if (length != 0) {
+		temp.x /= length;
+		temp.y /= length;
+		temp.z /= length;
+		temp.w /= length;
+	}
+	return temp;
+}
 // End Vector4
 #pragma endregion
 
