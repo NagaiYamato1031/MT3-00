@@ -38,6 +38,22 @@ void Matrix4x4ScreenPrintf(int x, int y, Matrix4x4 matrix, const char* label) {
 	}
 }
 
+
+//void DrawGrid(const Matrix4x4& viewProfectionMatix, const Matrix4x4& viewportMatrix) {
+//	// Grid の半分の幅
+//	const float kGridHalfWidth = 2.0f;
+//	// 分割数
+//	const UINT32 kSubdivision = 10;
+//	// 1 つ分のサイズ
+//	const float kGridEvery = (kGridHalfWidth * 2.0f) / float(kSubdivision);
+//	// 億から手前に徐々に引いていく
+//	for (UINT32 xIndex = 0; xIndex < kSubdivision; ++xIndex) {
+//		
+//	}
+//
+//}
+
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -48,11 +64,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Vector3 scale{ 1.2f,0.79f,-2.1f };
-	Vector3 rotate{ 0.4f,1.43f,-0.8f };
-	Vector3 translate{ 2.7f,-4.15f,1.57f };
-	Matrix4x4 worldMatrix = Mymath::MakeAffineMatrix(scale, rotate, translate);
-
+	Matrix4x4 orthographicMatrix = Mymath::MakeOrthographicMatrix(-160.0f, 160.0f, 200.0f, 300.0f, 0.0f, 1000.0f);
+	Matrix4x4 perspectiveFovMatrix = Mymath::MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
+	Matrix4x4 viewportMatrix = Mymath::MakeViewportMatrix(100.0f, 200.0f, 600.0f, 300.0f, 0.0f, 1.0f);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -77,7 +91,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		Matrix4x4ScreenPrintf(0, 0, worldMatrix, "worldMatrix");
+		Matrix4x4ScreenPrintf(0, 0, orthographicMatrix, "orthographicsMatrix");
+		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5, perspectiveFovMatrix, "perspectiveFovMatrix");
+		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 10, viewportMatrix, "viewportMatrix");
 
 		///
 		/// ↑描画処理ここまで
