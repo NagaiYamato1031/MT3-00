@@ -97,6 +97,14 @@ float Mymath::Dot(const Vector3& v1, const Vector3& v2) {
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
+Vector3 Mymath::Cross(const Vector3& v1, const Vector3& v2) {
+	Vector3 result;
+	result.x = v1.y * v2.z - v2.y * v1.z;
+	result.y = v1.z * v2.x - v2.z * v1.x;
+	result.z = v1.x * v2.y - v2.x * v1.y;
+	return result;
+}
+
 // 長さ
 float Mymath::Length(const Vector3& v) {
 	return sqrtf(Dot(v, v));
