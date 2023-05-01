@@ -1,4 +1,5 @@
 #include <Novice.h>
+#include <stdint.h>
 
 #include "Mymath.h"
 #include "Vector2.h"
@@ -64,9 +65,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Matrix4x4 orthographicMatrix = Mymath::MakeOrthographicMatrix(-160.0f, 160.0f, 200.0f, 300.0f, 0.0f, 1000.0f);
-	Matrix4x4 perspectiveFovMatrix = Mymath::MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.0f);
-	Matrix4x4 viewportMatrix = Mymath::MakeViewportMatrix(100.0f, 200.0f, 600.0f, 300.0f, 0.0f, 1.0f);
+	// クロス積
+	Vector3 v1{ 1.2f,-3.9f,2.5f };
+	Vector3 v2{ 2.8f,0.4f,-1.3f };
+	Vector3 cross = Mymath::Cross(v1, v2);
+
+	// 三角形の回転
+	Vector3 rotate{};
+	Vector3 translate{};
+
+	Vector3 cameraPosition{ 0.0f,0.0f,-10.0f };
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -81,6 +89,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		rotate.y += 0.03f;
+		float kTranslateMove = 0.03f;
+		if (Novice::CheckHitKey(DIK_W)) {
+			translate.z += kTranslateMove;
+		}
+		if (Novice::CheckHitKey(DIK_S)) {
+			translate.z -= kTranslateMove;
+		}
+		if (Novice::CheckHitKey(DIK_A)) {
+			translate.x -= kTranslateMove;
+		}
+		if (Novice::CheckHitKey(DIK_D)) {
+			translate.x += kTranslateMove;
+		}
+
+		// 各種行列の計算
+		Matrix4x4 worldMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
+		Matrix4x4 cameraMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
+		Matrix4x4 viewMatrix = Mymath::Inverse(cameraMatrix);
+		Matrix4x4 projectionMatrix = Mymath::MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
+		Matrix4x4 worldViewProjectionMatrix = Mymath::Multiply(Mymath::Multiply(worldMatrix, viewMatrix), projectionMatrix);
+		Matrix4x4 viewportMatrix = Mymath::MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
+		Vector3 kLocalVertices[3];
+		// 左下
+		kLocalVertices[0] = { -0.5f,-0.5f,0.0f };
+		// 上
+		kLocalVertices[1] = { 0.0f,0.5f,0.0f };
+		// 右下
+		kLocalVertices[2] = { 0.5f,-0.5f,0.0f };
+		Vector3 screenVertices[3];
+		for (uint32_t i = 0; i < 3; ++i) {
+			Vector3 ndcVertex = Mymath::Transform(kLocalVertices[i], worldViewProjectionMatrix);
+			screenVertices[i] = Mymath::Transform(ndcVertex, viewportMatrix);
+		}
+
 
 
 		///
@@ -91,9 +134,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		Matrix4x4ScreenPrintf(0, 0, orthographicMatrix, "orthographicsMatrix");
-		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 5, perspectiveFovMatrix, "perspectiveFovMatrix");
-		Matrix4x4ScreenPrintf(0, NS_Matrix4x4::kRowHeight * 10, viewportMatrix, "viewportMatrix");
+		VectorScreenPrintf(0, 0, cross, "Cross");
+		Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y),
+			int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
 
 		///
 		/// ↑描画処理ここまで

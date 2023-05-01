@@ -119,6 +119,14 @@ namespace Mymath
 	float Dot(const Vector3& v1, const Vector3& v2);
 
 	/// <summary>
+	/// ベクトルのクロス積
+	/// </summary>
+	/// <param name="v1">ベクトル１</param>
+	/// <param name="v2">ベクトル２</param>
+	/// <returns>クロス積</returns>
+	Vector3 Cross(const Vector3& v1, const Vector3& v2);
+
+	/// <summary>
 	/// ベクトルの長さ
 	/// </summary>
 	/// <param name="v">ベクトル</param>
@@ -334,7 +342,6 @@ namespace Mymath
 	/// <param name="farClip">遠平面</param>
 	/// <returns>正射影行列</returns>
 	Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip);
-	
 	/// <summary>
 	/// 正射影行列
 	/// </summary>
