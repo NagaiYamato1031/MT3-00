@@ -1,7 +1,5 @@
 #include <Novice.h>
-#include <cstdint>
-#include <math.h>
-#define _USE_MATH_DEFINES
+#include <stdint.h>
 
 #include "Mymath.h"
 #include "Vector2.h"
@@ -77,7 +75,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 translate{};
 
 	Vector3 cameraPosition{ 0.0f,0.0f,-10.0f };
-	bool drawing = true;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -92,6 +89,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		rotate.y += 0.03f;
 		float kTranslateMove = 0.03f;
 		if (Novice::CheckHitKey(DIK_W)) {
 			translate.z += kTranslateMove;
@@ -105,21 +103,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (Novice::CheckHitKey(DIK_D)) {
 			translate.x += kTranslateMove;
 		}
-		
-		rotate.y += 0.03f;
-		if (rotate.y < -2.0f * (22.0f / 7.0f)) {
-			rotate.y += 2.0f * (22.0f / 7.0f);
-		}
-		else if(2.0f * (22.0f / 7.0f) < rotate.y) {
-			rotate.y -= 2.0f * (22.0f / 7.0f);
-		}
-
-		if (-(22.0f / 7.0f) / 2.0f < rotate.y && rotate.y < (22.0f / 7.0f) / 2.0f) {
-			drawing = true;
-		}
-		else {
-			//drawing = false;
-		}
 
 		// 各種行列の計算
 		Matrix4x4 worldMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
@@ -128,7 +111,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 projectionMatrix = Mymath::MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
 		Matrix4x4 worldViewProjectionMatrix = Mymath::Multiply(Mymath::Multiply(worldMatrix, viewMatrix), projectionMatrix);
 		Matrix4x4 viewportMatrix = Mymath::MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
-		Vector3 kLocalVertices[3]{};
+		Vector3 kLocalVertices[3];
 		// 左下
 		kLocalVertices[0] = { -0.5f,-0.5f,0.0f };
 		// 上
@@ -152,10 +135,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		VectorScreenPrintf(0, 0, cross, "Cross");
-		if (drawing) {
-			Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y),
-				int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
-		}
+		Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y),
+			int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
+
 		///
 		/// ↑描画処理ここまで
 		///
