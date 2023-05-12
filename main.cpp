@@ -1,5 +1,6 @@
 #include <Novice.h>
-#include <stdint.h>
+#include <cstdint>
+#include <cmath>
 
 #include "Mymath.h"
 #include "Vector2.h"
@@ -76,6 +77,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Vector3 cameraPosition{ 0.0f,0.0f,-10.0f };
 
+
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -103,6 +106,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (Novice::CheckHitKey(DIK_D)) {
 			translate.x += kTranslateMove;
 		}
+
 
 		// 各種行列の計算
 		Matrix4x4 worldMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, rotate, translate);
@@ -134,9 +138,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
+		Vector3 triCross = Mymath::Cross(
+			screenVertices[0] - screenVertices[1],
+			screenVertices[1] - screenVertices[2]
+		);
+
 		VectorScreenPrintf(0, 0, cross, "Cross");
-		Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y),
-			int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
+		if (Mymath::Dot(triCross,cameraPosition) <= 0.0f) {
+			Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y),
+				int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
+		}
 
 		///
 		/// ↑描画処理ここまで
