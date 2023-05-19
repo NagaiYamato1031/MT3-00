@@ -2,13 +2,6 @@
 #include <cassert>
 #include <cmath>
 
-#include "C:\KamataEngine\DirectXGame\math\Vector2.h"
-#include "C:\KamataEngine\DirectXGame\math\Vector3.h"
-#include "C:\KamataEngine\DirectXGame\math\Vector4.h"
-#include "C:\KamataEngine\DirectXGame\math\Matrix4x4.h"
-
-// using namespace Mymath;
-
 #pragma region Vector
 
 #pragma region Vector2
@@ -607,7 +600,7 @@ Matrix4x4 Mymath::MakePerspectiveFovMatrix(float fovY, float aspectRatio, float 
 		1 / aspectRatio * (1 / std::tanf(fovY / 2)),0,0,0,
 		0,(1 / std::tanf(fovY / 2)),0,0,
 		0,0,farClip / (farClip - nearClip),1,
-		0,0,(-nearClip * farClip) / (farClip - nearClip),0
+		0,0,(-nearClip * farClip) / (farClip - nearClip),0.0f
 	};
 	return result;
 }
