@@ -1,6 +1,7 @@
 #include <Novice.h>
 #include <cstdint>
 #include <cmath>
+#include "imgui.h"
 
 #include "Mymath.h"
 #include "Vector2.h"
@@ -22,6 +23,8 @@ namespace NS_Matrix4x4 {
 	const int kColumnWidth = 68;
 }
 
+static Vector3 cameraPosition{ 0.0f,0.0f,-10.0f };
+
 void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label) {
 	Novice::ScreenPrintf(x, y, "%0.2f", vector.x);
 	Novice::ScreenPrintf(x + NS_Vector3::kColumnWidth, y, "%0.2f", vector.y);
@@ -40,20 +43,56 @@ void Matrix4x4ScreenPrintf(int x, int y, Matrix4x4 matrix, const char* label) {
 	}
 }
 
+void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix) {
+	// Grid 半分の幅
+	const float kGridHalfWidth = 2.0f;
+	// 分割数
+	const uint32_t kSubdivision = 10;
+	// 1 つ分の長さ
+	const float kGridEvery = (kGridHalfWidth * 2) / float(kSubdivision);
+	// 奥から手前への線を引いていく
+	// 今回はローカル座標で宣言
+	Vector3 xOrigin{ 0.0f,0.0f,0.0f };
+	Vector3 xVector{ 0.0f,0.0f,kGridHalfWidth * 2.0f };
+	for (uint32_t xIndex = 0; xIndex <= kSubdivision; ++xIndex) {
+		// 始点と終点
+		//Vector3 xStart{ (kSubdivision / 2.0f - xIndex) * kGridEvery,0.0f,kSubdivision * kGridEvery };
+		//Vector3 xEnd{ (kSubdivision / 2.0f - xIndex) * kGridEvery,0.0f,-float(kSubdivision) * kGridEvery };
+		// スクリーン座標まで変換を掛ける
+		//Matrix4x4 startWorldMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, xOrigin);
+		//Matrix4x4 endWorldMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, xVector);
+		Matrix4x4 worldMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, { (kSubdivision / 2.0f - xIndex) * kGridEvery,0.0f,-kGridHalfWidth });
+		Matrix4x4 cameraMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
+		Matrix4x4 worldViewProjectionMatrix = Mymath::Multiply(worldMatrix, viewProjectionMatrix);
 
-//void DrawGrid(const Matrix4x4& viewProfectionMatix, const Matrix4x4& viewportMatrix) {
-//	// Grid の半分の幅
-//	const float kGridHalfWidth = 2.0f;
-//	// 分割数
-//	const UINT32 kSubdivision = 10;
-//	// 1 つ分のサイズ
-//	const float kGridEvery = (kGridHalfWidth * 2.0f) / float(kSubdivision);
-//	// 億から手前に徐々に引いていく
-//	for (UINT32 xIndex = 0; xIndex < kSubdivision; ++xIndex) {
-//		
-//	}
-//
-//}
+		Vector3 kLocalVertices[2]{ xOrigin,xVector };
+		Vector3 screenVertices[2];
+		for (uint32_t i = 0; i < 2; ++i) {
+			Vector3 ndcVertex = Mymath::Transform(kLocalVertices[i], worldViewProjectionMatrix);
+			screenVertices[i] = Mymath::Transform(ndcVertex, viewportMatrix);
+		}
+		Novice::DrawLine(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y), 0xAAAAAAFF);
+	}
+	// 左から右への線を引いていく
+	// 今回はローカル座標で宣言
+	Vector3 zOrigin{ 0.0f,0.0f,0.0f };
+	Vector3 zVector{ kGridHalfWidth * 2.0f,0.0f,0.0f };
+	for (uint32_t zIndex = 0; zIndex <= kSubdivision; ++zIndex) {
+		// スクリーン座標まで変換を掛ける
+		Matrix4x4 worldMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, { -kGridHalfWidth,0.0f,(kSubdivision / 2.0f - zIndex) * kGridEvery });
+		Matrix4x4 cameraMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
+		Matrix4x4 worldViewProjectionMatrix = Mymath::Multiply(worldMatrix, viewProjectionMatrix);
+
+		Vector3 kLocalVertices[2]{ zOrigin,zVector };
+		Vector3 screenVertices[2];
+		for (uint32_t i = 0; i < 2; ++i) {
+			Vector3 ndcVertex = Mymath::Transform(kLocalVertices[i], worldViewProjectionMatrix);
+			screenVertices[i] = Mymath::Transform(ndcVertex, viewportMatrix);
+		}
+		Novice::DrawLine(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y), 0xAAAAAAFF);
+	}
+
+}
 
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -75,7 +114,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 rotate{};
 	Vector3 translate{};
 
-	Vector3 cameraPosition{ 0.0f,0.0f,-10.0f };
 
 
 
@@ -113,7 +151,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 cameraMatrix = Mymath::MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }, cameraPosition);
 		Matrix4x4 viewMatrix = Mymath::Inverse(cameraMatrix);
 		Matrix4x4 projectionMatrix = Mymath::MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
-		Matrix4x4 worldViewProjectionMatrix = Mymath::Multiply(Mymath::Multiply(worldMatrix, viewMatrix), projectionMatrix);
+		// viewProjectionMatrix
+		Matrix4x4 viewProjectionMatrix = Mymath::Multiply(viewMatrix, projectionMatrix);
+		Matrix4x4 worldViewProjectionMatrix = Mymath::Multiply(worldMatrix, viewProjectionMatrix);
 		Matrix4x4 viewportMatrix = Mymath::MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 		Vector3 kLocalVertices[3];
 		// 左下
@@ -138,13 +178,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
+		DrawGrid(viewProjectionMatrix, viewportMatrix);
+
 		Vector3 triCross = Mymath::Cross(
 			screenVertices[0] - screenVertices[1],
 			screenVertices[1] - screenVertices[2]
 		);
 
 		VectorScreenPrintf(0, 0, cross, "Cross");
-		if (Mymath::Dot(triCross,cameraPosition) <= 0.0f) {
+		if (Mymath::Dot(triCross, cameraPosition) <= 0.0f) {
 			Novice::DrawTriangle(int(screenVertices[0].x), int(screenVertices[0].y), int(screenVertices[1].x), int(screenVertices[1].y),
 				int(screenVertices[2].x), int(screenVertices[2].y), RED, kFillModeSolid);
 		}
